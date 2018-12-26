@@ -7,7 +7,12 @@ license = "Apache-2.0"
 description = "A library of displayers (and helpers) for evcxr_jupyter."
 repository = "https://github.com/davidB/evcxr_displayers"
 readme = "README.md"
-category = ["visualization"]
+#category = ["visualization"]
 keywords = ["evcxr", "jupyter"]
 
 [dependencies]
+nalgebra = {version = "0.16.12", optional = true}
+num-traits = {version = "0.2.6", optional = true}
+
+[features]
+display_nalgebra = []

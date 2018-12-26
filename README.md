@@ -7,7 +7,8 @@ A library of displayers (and helpers) for [evcxr_jupyter](https://crates.io/crat
 Inside your jupyter (rust) notebook:
 
 ```txt
-:dep evcxr_displayers = { version = "0.1.0" features=["nalgebra"]}
+:dep evcxr_displayers = { version = "0.1.0" features=["display_nalgebra"]}
+use evcxr_displayers::EvcxrDisplay;
 ```
 
 ## Links
