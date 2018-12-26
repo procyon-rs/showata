@@ -15,4 +15,4 @@ nalgebra = {version = "0.16.12", optional = true}
 num-traits = {version = "0.2.6", optional = true}
 
 [features]
-display_nalgebra = []
+display_nalgebra = ["nalgebra", "num-traits"]

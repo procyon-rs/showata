@@ -9,5 +9,6 @@ matrix:
     - rust: nightly
   fast_finish: true
 script:
-  - cargo build --all-features
+  - cargo build
+  - cargo build --features=display_nalgebra
   - cargo test --all-targets --all-features
