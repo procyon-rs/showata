@@ -4,5 +4,10 @@ version = "0.1.0"
 authors = ["David Bernard <david.bernard.31@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
+description = "A library of displayers (and helpers) for evcxr_jupyter."
+repository = "https://github.com/davidB/evcxr_displayers"
+readme = "README.md"
+category = ["visualization"]
+keywords = ["evcxr", "jupyter"]
 
 [dependencies]
