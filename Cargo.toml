@@ -3,5 +3,6 @@ name = "evcxr_displayers"
 version = "0.1.0"
 authors = ["David Bernard <david.bernard.31@gmail.com>"]
 edition = "2018"
+license = "Apache-2.0"
 
 [dependencies]
