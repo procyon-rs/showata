@@ -2,14 +2,20 @@
 
 A library of displayers (and helpers) for [evcxr_jupyter](https://crates.io/crates/evcxr_jupyter).
 
+Feedbacks (comments, tickets, PR,...) are welcomes.
+
 ## Usage
 
 Inside your jupyter (rust) notebook:
 
 ```txt
 :dep evcxr_displayers = { version = "0.1.0" features=["display_nalgebra"]}
+
+extern crate evcxr_displayers;
 use evcxr_displayers::EvcxrDisplay;
 ```
+
+![Sample Screenshot](https://i.imgur.com/HH3qUXh.png)
 
 ### Notes
 
@@ -22,4 +28,5 @@ Why features (vs packages):
 
 ## Links
 
-- [evcxr_jupyter](https://crates.io/crates/evcxr_jupyter) A Jupyter Kernel for the Rust programming language
+- [evcxr_jupyter](https://crates.io/crates/evcxr_jupyter) A Jupyter Kernel for the Rust programming language.
+- [nalgebra](https://crates.io/crates/nalgebra) A linear algebra library for the Rust programming language.
