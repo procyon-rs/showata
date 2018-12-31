@@ -12,7 +12,7 @@
 use nalgebra as na;
 use num_traits;
 
-impl<N: na::Scalar + PartialOrd + num_traits::sign::Signed, R: na::Dim, C: na::Dim, S: na::base::storage::Storage<N, R, C>> super::EvcxrDisplay for na::Matrix<N, R, C, S> {
+impl<N: na::Scalar + PartialOrd + num_traits::sign::Signed, R: na::Dim, C: na::Dim, S: na::base::storage::Storage<N, R, C>> crate::EvcxrDisplay for na::Matrix<N, R, C, S> {
     fn evcxr_display(&self) {
         let (row_size, col_size) = self.shape();
         let mut html = String::new();
@@ -34,6 +34,6 @@ impl<N: na::Scalar + PartialOrd + num_traits::sign::Signed, R: na::Dim, C: na::D
             }
         }
         html.push_str("</table>");
-        println!("EVCXR_BEGIN_CONTENT text/html\n{}\nEVCXR_END_CONTENT", html);
+        crate::display_text("text/html", html);
     }
 }
