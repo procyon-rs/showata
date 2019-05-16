@@ -15,6 +15,9 @@ mod display_iterator;
 #[cfg(feature = "display_nalgebra")]
 mod display_nalgebra;
 
+#[cfg(feature = "display_ndarray")]
+mod display_ndarray;
+
 use std::path::Path;
 
 pub trait EvcxrDisplay {

@@ -12,12 +12,16 @@ keywords = ["evcxr", "jupyter"]
 
 [dependencies]
 #evcxr_runtime = "1.0.0"
-base64 = "0.10.0"
-nalgebra = {version = "0.16.12", optional = true}
+nalgebra = {version = "0.16.13", optional = true}
 num-traits = {version = "0.2.6", optional = true}
+ndarray = {version = "0.12.1", optional = true}
+#vega-lite = {version = "0.0.2", optional = true}
 
 [dev-dependencies]
-mime = "0.3.12"
+mime = "0.3.13"
+nalgebra = "0.16.13"
 
 [features]
+default = ["display_nalgebra", "display_ndarray"]
 display_nalgebra = ["nalgebra", "num-traits"]
+display_ndarray = ["ndarray"]
