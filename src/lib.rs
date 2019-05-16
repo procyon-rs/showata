@@ -10,7 +10,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[cfg(feature="display_nalgebra")]
+mod display_iterator;
+
+#[cfg(feature = "display_nalgebra")]
 mod display_nalgebra;
 
 use std::path::Path;
