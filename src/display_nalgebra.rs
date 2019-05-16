@@ -37,3 +37,17 @@ impl<N: na::Scalar + PartialOrd + num_traits::sign::Signed, R: na::Dim, C: na::D
         crate::display_text("text/html", html);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::EvcxrDisplay;
+
+    #[test]
+    fn test_no_crash_on_3x4() {
+        let m = na::Matrix3x4::new(11, 12, 13, 14,
+                        21, 22, 23, 24,
+                        31, 32, 33, 34);
+        m.evcxr_display();
+    }
+}
