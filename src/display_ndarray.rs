@@ -9,18 +9,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+use crate::display;
+use crate::DisplayOfData;
 use ndarray;
 
-impl<S,D> crate::EvcxrDisplay for ndarray::ArrayBase<S,D>
+impl<S, D> From<&ndarray::ArrayBase<S, D>> for DisplayOfData
 where
     D: ndarray::Dimension,
     S: ndarray::Data,
     S::Elem: std::fmt::Debug,
 {
-    fn evcxr_display(&self) {
-        let col_size = match self.ndim() {
-            1 => self.shape()[0],
-            2 => self.shape()[1],
+    fn from(v: &ndarray::ArrayBase<S, D>) -> Self {
+        let col_size = match v.ndim() {
+            1 => v.shape()[0],
+            2 => v.shape()[1],
             n => unimplemented!("only support 1D or 2D array not {}D", n),
         };
         let mut html = String::new();
@@ -31,7 +33,7 @@ where
             html.push_str(&format!("<th>{}</th>", c));
         }
         html.push_str("<tr>");
-        for (r,row) in self.genrows().into_iter().enumerate() {
+        for (r, row) in v.genrows().into_iter().enumerate() {
             html.push_str("<tr>");
             html.push_str("<th></th>");
             html.push_str(&format!("<th>{}</th>", r));
@@ -41,26 +43,40 @@ where
             html.push_str("</tr>");
         }
         html.push_str("</table>");
-        crate::display_text("text/html", html);
+        DisplayOfData {
+            mime_type: "text/html".into(),
+            content: html,
+        }
+    }
+}
+
+impl<S, D> crate::EvcxrDisplay for ndarray::ArrayBase<S, D>
+where
+    D: ndarray::Dimension,
+    S: ndarray::Data,
+    S::Elem: std::fmt::Debug,
+{
+    fn evcxr_display(&self) {
+        display(self)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::EvcxrDisplay;
+    use crate::display;
 
     #[test]
     fn test_no_crash_on_3x4() {
         use ndarray::Array2;
         let m = Array2::<f64>::zeros((3, 4));
-        m.evcxr_display();
+        display(&m);
     }
 
     #[test]
     fn test_no_crash_on_3x1() {
         use ndarray::Array1;
         let m = Array1::<f64>::zeros(3);
-        m.evcxr_display();
+        display(&m);
     }
 }

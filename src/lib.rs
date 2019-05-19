@@ -20,8 +20,22 @@ mod display_ndarray;
 
 use std::path::Path;
 
+pub struct DisplayOfData {
+    pub mime_type: String,
+    pub content: String,
+}
+
 pub trait EvcxrDisplay {
     fn evcxr_display(&self);
+}
+
+impl From<(String, String)> for DisplayOfData {
+    fn from(v: (String, String)) -> Self {
+        DisplayOfData {
+            mime_type: v.0,
+            content: v.1,
+        }
+    }
 }
 
 /// Display content as text
@@ -39,6 +53,11 @@ pub fn display_text<M: AsRef<str>, S: AsRef<str>>(mime_type: M, text: S) {
         mime_type.as_ref(),
         text.as_ref()
     );
+}
+
+pub fn display<D: Into<DisplayOfData>>(data: D) {
+    let dd: DisplayOfData = data.into();
+    display_text(dd.mime_type, dd.content);
 }
 
 /// Display bytes as base64 encoded
@@ -66,7 +85,11 @@ pub fn display_bytes<S: AsRef<str>>(mime_type: S, buffer: &[u8]) {
 /// display_file("hello.html", "text/html", true);
 /// display_file("hello.svg", mime::IMAGE_SVG, true);
 /// ```
-pub fn display_file<P: AsRef<Path>, S: AsRef<str>>(path: P, mime_type: S, as_text: bool) -> Result<(), std::io::Error> {
+pub fn display_file<P: AsRef<Path>, S: AsRef<str>>(
+    path: P,
+    mime_type: S,
+    as_text: bool,
+) -> Result<(), std::io::Error> {
     let buffer = std::fs::read(path)?;
     if as_text {
         let text = String::from_utf8_lossy(&buffer);
