@@ -18,6 +18,10 @@ mod display_nalgebra;
 #[cfg(feature = "display_ndarray")]
 mod display_ndarray;
 
+#[cfg(feature = "display_vega")]
+mod display_vega;
+mod vegalite;
+
 use std::path::Path;
 
 pub struct DisplayOfData {
