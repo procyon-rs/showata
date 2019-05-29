@@ -9,10 +9,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-use crate::display;
-use crate::DisplayOfData;
+use failure::Error;
+use crate::ContentInfo;
+use crate::Displayable;
 
-pub fn from_iter<T>(v: impl Iterator<Item = T>) -> DisplayOfData
+pub fn from_iter<T>(v: impl Iterator<Item = T>) -> ContentInfo
 where
     T: std::fmt::Debug,
 {
@@ -27,66 +28,36 @@ where
         html.push_str("</tr>");
     }
     html.push_str("</table>");
-    DisplayOfData {
+    ContentInfo {
         mime_type: "text/html".into(),
         content: html,
     }
 }
 
-impl<T> From<&Vec<T>> for DisplayOfData
-where
-    T: std::fmt::Debug,
-{
-    fn from(v: &Vec<T>) -> Self {
-        from_iter(v.iter())
+impl<T> Displayable for Vec<T> where
+    T: std::fmt::Debug,{
+    fn to_content_info(&self) -> Result<ContentInfo, Error> {
+        Ok(from_iter(self.iter()))
     }
 }
 
-impl<T> crate::EvcxrDisplay for Vec<T>
-where
-    T: std::fmt::Debug,
-{
-    fn evcxr_display(&self) {
-        display(self)
+impl<T> Displayable for &[T] where
+    T: std::fmt::Debug,{
+    fn to_content_info(&self) -> Result<ContentInfo, Error> {
+        Ok(from_iter(self.iter()))
     }
 }
 
-impl<T> From<&[T]> for DisplayOfData
-where
-    T: std::fmt::Debug,
-{
-    fn from(v: &[T]) -> Self {
-        from_iter(v.iter())
-    }
-}
-
-impl<T> crate::EvcxrDisplay for [T]
-where
-    T: std::fmt::Debug,
-{
-    fn evcxr_display(&self) {
-        display(self)
-    }
-}
-
-// impl<T> crate::EvcxrDisplay for IntoIterator<Item=T, IntoIter=Iterator<Item=T>>
-// where
-//     T: std::fmt::Debug,
-// {
-//     fn evcxr_display(&self) {
-//         display_iter(self.into_iter())
-//     }
-// }
 
 #[cfg(test)]
 mod tests {
-    use crate::display;
+    use super::*;
 
     #[test]
     fn test_vec() {
         let m = vec![1.0, 2.0, 3.0];
         //TODO test content of m
-        display(&m);
+        m.display().unwrap();
     }
 
     #[test]
@@ -94,6 +65,6 @@ mod tests {
         let m0 = vec![1.0, 2.0, 3.0];
         let m = m0.as_slice();
         //TODO test content of m
-        display(m);
+        m.display().unwrap();
     }
 }

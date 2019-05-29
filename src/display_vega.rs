@@ -13,37 +13,30 @@
 use crate::vegalite::Vegalite;
 use serde::Serialize;
 use serde_json;
-use std::path::Path;
 use crate::vegalite;
+use crate::ContentInfo;
+use crate::Displayable;
+use failure::Error;
 
-impl crate::EvcxrDisplay for Vegalite {
-    fn evcxr_display(&self) {
-        // TODO manage error
-        let content = serde_json::to_string(self).expect("to be able to convert into json");
-        crate::display_text("application/vnd.vegalite.v2+json", content);
+impl Displayable for Vegalite {
+    fn to_content_info(&self) -> Result<ContentInfo, Error> {
+        /// vega3-extension 	application/vnd.vega.v3+json, application/vnd.vegalite.v2+json 	.vg, .vl, .vg.json, .vl.json, .vega, .vegalite
+        let content = serde_json::to_string(self)?;
+        Ok(ContentInfo{
+            content,
+            mime_type: "application/vnd.vegalite.v2+json".into(),
+        })
     }
-}
 
-/// vega3-extension 	application/vnd.vega.v3+json, application/vnd.vegalite.v2+json 	.vg, .vl, .vg.json, .vl.json, .vega, .vegalite
-// TODO for html use [vega/vega-embed: Publish Vega visualizations as embedded web components with interactive parameters.](https://github.com/vega/vega-embed)
-// TODO add an Config parameter (with config for to json str, config for embed)
-pub fn save_as<P: AsRef<Path>>(chart: &Vegalite, path: P) -> Result<(), std::io::Error> {
-    let json = serde_json::to_string_pretty(chart)?;
-    let extension = path
-        .as_ref()
-        .extension()
-        .map(|e| e.to_string_lossy().to_lowercase());
-    let contents = match extension {
-        Some(ref e) if e == "html" || e == "htm" => {
-            VEGA_EMBED_HTML_TEMPLATE.replace("{{ spec_as_json }}", &json)
-        }
-        _ => json,
-    };
-    //if path.extension == "html" { generate embed}
-    std::fs::write(path, contents)
-}
+    // TODO for html use [vega/vega-embed: Publish Vega visualizations as embedded web components with interactive parameters.](https://github.com/vega/vega-embed)
+    // TODO add an Config parameter (with config for to json str, config for embed)
+    fn to_html_page(&self) -> Result<String, Error> {
+        let dod = self.to_content_info()?;
+        let content = VEGA_EMBED_HTML_TEMPLATE.replace("{{ spec_as_json }}", &dod.content);
+        Ok(content.into())
+    }
 
-// TODO html_display(chart: &Spec)
+}
 
 const VEGA_EMBED_HTML_TEMPLATE: &str = r#"
 <!DOCTYPE html>
@@ -187,8 +180,7 @@ mod tests {
             ))
             .build()
             .unwrap();
-        save_as(&chart, "/tmp/display.html").unwrap();
-        opener::open("/tmp/display.html").unwrap();
+        chart.display().unwrap();
     }
 
     // impl From<String> for crate::vegalite::Title {

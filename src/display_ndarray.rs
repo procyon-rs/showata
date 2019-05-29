@@ -9,17 +9,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-use crate::display;
-use crate::DisplayOfData;
+use crate::ContentInfo;
+use crate::Displayable;
+use failure::Error;
 use ndarray;
 
-impl<S, D> From<&ndarray::ArrayBase<S, D>> for DisplayOfData
+impl<S, D> Displayable for ndarray::ArrayBase<S, D>
 where
     D: ndarray::Dimension,
     S: ndarray::Data,
     S::Elem: std::fmt::Debug,
 {
-    fn from(v: &ndarray::ArrayBase<S, D>) -> Self {
+    fn to_content_info(&self) -> Result<ContentInfo, Error> {
+        let v = self;
         let col_size = match v.ndim() {
             1 => v.shape()[0],
             2 => v.shape()[1],
@@ -43,40 +45,29 @@ where
             html.push_str("</tr>");
         }
         html.push_str("</table>");
-        DisplayOfData {
+        Ok(ContentInfo {
             mime_type: "text/html".into(),
             content: html,
-        }
-    }
-}
-
-impl<S, D> crate::EvcxrDisplay for ndarray::ArrayBase<S, D>
-where
-    D: ndarray::Dimension,
-    S: ndarray::Data,
-    S::Elem: std::fmt::Debug,
-{
-    fn evcxr_display(&self) {
-        display(self)
+        })
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::display;
+    use crate::Displayable;
 
     #[test]
     fn test_no_crash_on_3x4() {
         use ndarray::Array2;
         let m = Array2::<f64>::zeros((3, 4));
-        display(&m);
+        m.display().unwrap();
     }
 
     #[test]
     fn test_no_crash_on_3x1() {
         use ndarray::Array1;
         let m = Array1::<f64>::zeros(3);
-        display(&m);
+        m.display().unwrap();
     }
 }

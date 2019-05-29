@@ -8,7 +8,7 @@ description = "A library of displayers (and helpers) for evcxr_jupyter."
 repository = "https://github.com/davidB/evcxr_displayers"
 readme = "README.md"
 #category = ["visualization"]
-keywords = ["evcxr", "jupyter"]
+keywords = ["evcxr", "jupyter", "visualization", "plot"]
 
 [dependencies]
 #evcxr_runtime = "1.0.0"
@@ -20,12 +20,14 @@ ndarray = {version = "0.12.1", optional = true}
 serde = {version = "1.0.91", optional = true, features = ["derive"]}
 serde_json = {version = "1.0.39", optional = true}
 derive_builder = "0.7.1"
+#arrow = "0.13.0" # nightly
+opener = "0.4.0"
+failure = "0.1.5"
 
 [dev-dependencies]
 mime = "0.3.13"
 nalgebra = "0.16.13"
 typed-builder = "0.3.0"
-opener = "0.4.0"
 
 [features]
 default = ["display_nalgebra", "display_ndarray", "display_vega"]

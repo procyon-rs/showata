@@ -9,29 +9,30 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-use crate::display;
-use crate::DisplayOfData;
+use crate::ContentInfo;
+use crate::Displayable;
 use nalgebra as na;
 use num_traits;
+use failure::Error;
 
-impl<N, R, C, S> From<&na::Matrix<N, R, C, S>> for DisplayOfData
-where
+impl<N, R, C, S> Displayable for na::Matrix<N, R, C, S> where
     N: na::Scalar + PartialOrd + num_traits::sign::Signed,
     R: na::Dim,
     C: na::Dim,
     S: na::base::storage::Storage<N, R, C>,
 {
-    fn from(v: &na::Matrix<N, R, C, S>) -> Self {
+    fn to_content_info(&self) -> Result<ContentInfo, Error> {
+        let v = self;
         let (row_size, col_size) = v.shape();
         let mut html = String::new();
         html.push_str("<table>");
+        html.push_str("<tr>");
+        html.push_str("<th></th>");
+        for c in 0..col_size {
+            html.push_str(&format!("<th>{:?}</th>", c));
+        }
+        html.push_str("</tr>");
         unsafe {
-            html.push_str("<tr>");
-            html.push_str("<th></th>");
-            for c in 0..col_size {
-                html.push_str(&format!("<th>{:?}</th>", c));
-            }
-            html.push_str("<tr>");
             for r in 0..row_size {
                 html.push_str("<tr>");
                 html.push_str(&format!("<th>{:?}</th>", r));
@@ -42,35 +43,22 @@ where
             }
         }
         html.push_str("</table>");
-        DisplayOfData {
+        Ok(ContentInfo {
             mime_type: "text/html".into(),
             content: html,
-        }
-    }
-}
-
-impl<N, R, C, S> crate::EvcxrDisplay for na::Matrix<N, R, C, S>
-where
-    N: na::Scalar + PartialOrd + num_traits::sign::Signed,
-    R: na::Dim,
-    C: na::Dim,
-    S: na::base::storage::Storage<N, R, C>,
-{
-    fn evcxr_display(&self) {
-        display(self)
+        })
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::display;
-    use crate::EvcxrDisplay;
+    use crate::Displayable;
 
     #[test]
     fn test_no_crash_on_3x4() {
         let m = na::Matrix3x4::new(11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34);
-        display(&m);
+        m.display().unwrap();
         m.evcxr_display();
     }
 }
