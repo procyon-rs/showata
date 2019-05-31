@@ -107,7 +107,7 @@ const CONTENT_EMBED_HTML_TEMPLATE: &str = r#"
 /// use evcxr_displayers::*;
 ///
 /// let content = ".....";
-/// display_text("text/plain", content);
+/// jupyter_display_text("text/plain", content);
 /// ```
 /// TODO replace by evcxr_runtime ?
 pub fn jupyter_display_text<M: AsRef<str>, S: AsRef<str>>(mime_type: M, text: S) {
@@ -124,7 +124,7 @@ pub fn jupyter_display_text<M: AsRef<str>, S: AsRef<str>>(mime_type: M, text: S)
 /// use evcxr_displayers::*;
 ///
 /// let buffer: Vec<u8> = vec![];
-/// display_bytes("image/png", &buffer);
+/// jupyter_display_bytes("image/png", &buffer);
 /// ```
 // TODO replace by evcxr_runtime ?
 pub fn jupyter_display_bytes<S: AsRef<str>>(mime_type: S, buffer: &[u8]) {
@@ -137,11 +137,11 @@ pub fn jupyter_display_bytes<S: AsRef<str>>(mime_type: S, buffer: &[u8]) {
 /// use evcxr_displayers::*;
 /// use mime;
 ///
-/// display_file("local-img.png", "image/png", false);
-/// display_file("local-img.png", mime::IMAGE_PNG, false);
+/// jupyter_display_file("local-img.png", "image/png", false);
+/// jupyter_display_file("local-img.png", mime::IMAGE_PNG, false);
 ///
-/// display_file("hello.html", "text/html", true);
-/// display_file("hello.svg", mime::IMAGE_SVG, true);
+/// jupyter_display_file("hello.html", "text/html", true);
+/// jupyter_display_file("hello.svg", mime::IMAGE_SVG, true);
 /// ```
 pub fn jupyter_display_file<P: AsRef<Path>, S: AsRef<str>>(
     path: P,

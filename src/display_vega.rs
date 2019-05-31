@@ -20,7 +20,8 @@ use failure::Error;
 
 impl Displayable for Vegalite {
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
-        /// vega3-extension 	application/vnd.vega.v3+json, application/vnd.vegalite.v2+json 	.vg, .vl, .vg.json, .vl.json, .vega, .vegalite
+        // vega3-extension: .vg, .vl, .vg.json, .vl.json, .vega, .vegalite
+        // mime-types: 	application/vnd.vega.v3+json, application/vnd.vegalite.v2+json
         let content = serde_json::to_string(self)?;
         Ok(ContentInfo{
             content,
