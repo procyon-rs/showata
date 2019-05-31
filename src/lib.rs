@@ -26,6 +26,7 @@ mod display_image;
 
 use std::path::Path;
 use failure::Error;
+use std::time::SystemTime;
 
 pub struct ContentInfo {
     pub mime_type: String,
@@ -52,7 +53,9 @@ pub trait Displayable {
         //TODO security check that the user can read/write only his own files
         std::fs::create_dir_all(&dir)?;
         //TODO generate random/timestamp file
-        let path = dir.join("display.html");
+        let epoch = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH)?;
+
+        let path = dir.join(format!("display-{}.html", epoch.as_millis()));
         let html = self.to_html_page()?;
         std::fs::write(&path, html)?;
         opener::open(path.as_os_str())?;
