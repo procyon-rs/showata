@@ -21,6 +21,9 @@ mod display_ndarray;
 mod display_vega;
 mod vegalite;
 
+#[cfg(feature = "display_image")]
+mod display_image;
+
 use std::path::Path;
 use failure::Error;
 

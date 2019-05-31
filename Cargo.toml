@@ -19,7 +19,8 @@ ndarray = {version = "0.12.1", optional = true}
 #vega-lite = {version = "0.0.2", optional = true}
 serde = {version = "1.0.91", optional = true, features = ["derive"]}
 serde_json = {version = "1.0.39", optional = true}
-derive_builder = "0.7.1"
+derive_builder = {version = "0.7.1", optional = true}
+image = {version = "0.21.1" , optional = true}
 #arrow = "0.13.0" # nightly
 opener = "0.4.0"
 failure = "0.1.5"
@@ -30,7 +31,8 @@ nalgebra = "0.16.13"
 typed-builder = "0.3.0"
 
 [features]
-default = ["display_nalgebra", "display_ndarray", "display_vega"]
+default = ["display_nalgebra", "display_ndarray", "display_vega", "display_image"]
 display_nalgebra = ["nalgebra", "num-traits"]
 display_ndarray = ["ndarray"]
-display_vega = ["serde_json", "serde"]
+display_vega = ["serde_json", "serde", "derive_builder"]
+display_image = ["image"]
