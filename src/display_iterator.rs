@@ -34,6 +34,17 @@ where
     }
 }
 
+// until specialization, do not provide Displayable for IntoIterator
+// because it conflicts with nalgebra array, ndarray, DynamicImage
+// impl<T, C> Displayable for C where
+//     C: IntoIterator<Item=T>,
+//     T: std::fmt::Debug,{
+//     fn to_content_info(&self) -> Result<ContentInfo, Error> {
+//         Ok(from_iter(self.into_iter()))
+//     }
+// }
+
+
 impl<T> Displayable for Vec<T> where
     T: std::fmt::Debug,{
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
