@@ -29,6 +29,7 @@ failure = "0.1.5"
 mime = "0.3.13"
 nalgebra = "0.16.13"
 typed-builder = "0.3.0"
+csv = "1"
 
 [features]
 default = ["display_nalgebra", "display_ndarray", "display_vega", "display_image"]

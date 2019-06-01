@@ -8184,7 +8184,8 @@ pub struct Transform {
     /// predicate](https://vega.github.io/vega-lite/docs/filter.html#selection-predicate)
     ///
     /// 4) a logical operand that combines (1), (2), or (3).
-    pub filter: Box<Option<Box<PurpleLogicalOperandPredicate>>>,
+    //pub filter: Box<Option<Box<PurpleLogicalOperandPredicate>>>,
+    pub filter: Option<PurpleLogicalOperandPredicate>,
     /// The field for storing the computed formula value.
     ///
     /// The field or fields for storing the computed formula value.

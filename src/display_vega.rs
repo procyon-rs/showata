@@ -117,6 +117,10 @@ where
 mod tests {
     use super::*;
     use crate::vegalite::*;
+    use csv;
+    use std::path::Path;
+    use serde::{Serialize, Deserialize};
+
 // {
 //   "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
 //   "description": "Google's stock price over time.",
@@ -129,7 +133,7 @@ mod tests {
 //   }
 // }
 
-    #[derive(Serialize)]
+    #[derive(Serialize, Deserialize)]
     pub struct Item {
         pub symbol: String,
         pub date: String,
@@ -138,40 +142,20 @@ mod tests {
 
     #[test]
     fn test_save_as() {
-        //let values = vec![1,2,3,4,5,6];
-        let values = vec![
-            Item{
-                symbol: "MSFT".to_owned(),
-                date: "Jan 1 2000".to_owned(),
-                price: 39.81_f64,
-            },
-            Item{
-                symbol: "MSFT".to_owned(),
-                date: "Feb 1 2000".to_owned(),
-                price: 36.35_f64,
-            },
-            Item{
-                symbol: "MSFT".to_owned(),
-                date: "Mar 1 2000".to_owned(),
-                price: 43.22_f64,
-            },
-        ];
-        //let data = iter_to_data(values.iter());
+        let mut rdr = csv::Reader::from_path(Path::new("examples/res/data/stocks.csv")).unwrap();
+        let values = rdr.deserialize().into_iter().collect::<Result<Vec<Item>, csv::Error>>().unwrap();
         let chart = VegaliteBuilder::default()
-            .title(Some(crate::vegalite::Title::String("Hello".to_owned())))
-            .width(400.0)
-            .height(200.0)
-            //.padding(5.0)
+            // .title(Some(crate::vegalite::Title::String("Hello".to_owned())))
+            // .width(400.0)
+            // .height(200.0)
+            // .padding(Some(Padding::Double(5.0)))
+            .description("Google's stock price over time.".to_owned())
             .data(Some((&values).into()))
-            // .data(
-            //     DataBuilder::default()
-            //         .url(Some(
-            //             // "https://vega.github.io/vega-lite/data/flare.json".to_owned(),
-            //             format!("{}/examples/res/data/flare.json", std::env::current_dir().unwrap().display()),
-            //         ))
-            //         .build()
-            //         .unwrap(),
-            // )
+            .transform(Some(vec![
+                TransformBuilder::default().filter(Some(
+                    PurpleLogicalOperandPredicate::String("datum.symbol==='GOOG'".to_owned())
+                )).build().unwrap()
+            ]))
             .mark(Some(AnyMark::Enum(Mark::Line)))
             .encoding(Some(EncodingBuilder::default()
                 .x(XClassBuilder::default().field(Some(Field::String("date".to_string()))).def_type(Some(Type::Temporal)).build().unwrap())
@@ -217,239 +201,3 @@ mod tests {
     //     }
     // }
 }
-
-#[cfg(test)]
-mod tests_typed_builder {
-
-    use typed_builder::TypedBuilder;
-
-    #[derive(PartialEq, Debug, TypedBuilder)]
-    struct Foo {
-        #[builder(default)]
-        s: Option<String>,
-
-        // Mandatory Field:
-        x: i32,
-
-        // #[default] without parameter - use the type's default
-        #[builder(default)]
-        y: Option<i32>,
-
-        // Or you can set the default
-        #[builder(default = 20)]
-        z: i32,
-
-        // If the default cannot be parsed, you must encode it as a string
-        #[builder(default_code = "vec![30, 40]")]
-        w: Vec<u32>,
-    }
-
-    #[test]
-    fn test_typed_builder() {
-        assert_eq!(
-            Foo::builder().x(1).y(2).z(3).w(vec![4, 5]).build(),
-            Foo {
-                s: None,
-                x: 1,
-                y: Some(2),
-                z: 3,
-                w: vec![4, 5]
-            }
-        );
-
-        // Change the order of construction:
-        assert_eq!(
-            Foo::builder().z(1).x(2).w(vec![4, 5]).y(3).build(),
-            Foo {
-                s: None,
-                x: 2,
-                y: Some(3),
-                z: 1,
-                w: vec![4, 5]
-            }
-        );
-
-        // Optional fields are optional:
-        assert_eq!(
-            Foo::builder().x(1).build(),
-            Foo {
-                s: None,
-                x: 1,
-                y: None,
-                z: 20,
-                w: vec![30, 40]
-            }
-        );
-
-        // assert_eq!(
-        //     Foo::builder().s("hello").x(1).build()
-        //     , Foo {s: Some("hello".into()), x: 1, y: None, z: 20, w: vec![30, 40] });
-
-        // This will not compile - because we did not set x:
-        //Foo::builder().build();
-
-        // This will not compile - because we set y twice:
-        //Foo::builder().x(1).y(2).y(3);
-    }
-}
-
-#[cfg(test)]
-mod tests_builder {
-
-    use derive_builder::Builder;
-
-    #[derive(PartialEq, Debug, Clone, Builder)]
-    #[builder(setter(into))]
-    struct Foo {
-        // #[default] without parameter - use the type's default
-        #[builder(default)]
-        s: Option<String>,
-
-        // Mandatory Field:
-        x: i32,
-
-        // #[default] without parameter - use the type's default
-        #[builder(default)]
-        y: Option<i32>,
-
-        // Or you can set the default
-        #[builder(default = "20")]
-        z: i32,
-
-        // If the default cannot be parsed, you must encode it as a string
-        #[builder(default = "vec![30, 40]")]
-        w: Vec<u32>,
-    }
-
-    #[test]
-    fn test_typed_builder() {
-        assert_eq!(
-            FooBuilder::default()
-                .x(1)
-                .y(2)
-                .z(3)
-                .w(vec![4, 5])
-                .build()
-                .unwrap(),
-            Foo {
-                s: None,
-                x: 1,
-                y: Some(2),
-                z: 3,
-                w: vec![4, 5]
-            }
-        );
-
-        // Change the order of construction:
-        assert_eq!(
-            FooBuilder::default()
-                .z(1)
-                .x(2)
-                .w(vec![4, 5])
-                .y(3)
-                .build()
-                .unwrap(),
-            Foo {
-                s: None,
-                x: 2,
-                y: Some(3),
-                z: 1,
-                w: vec![4, 5]
-            }
-        );
-
-        // Optional fields are optional:
-        assert_eq!(
-            FooBuilder::default().x(1).build().unwrap(),
-            Foo {
-                s: None,
-                x: 1,
-                y: None,
-                z: 20,
-                w: vec![30, 40]
-            }
-        );
-
-        // Optional + into:
-        assert_eq!(
-            FooBuilder::default()
-                .s("hello".to_owned())
-                .x(1)
-                .build()
-                .unwrap(),
-            Foo {
-                s: Some("hello".into()),
-                x: 1,
-                y: None,
-                z: 20,
-                w: vec![30, 40]
-            }
-        );
-
-        // This will not compile - because we did not set x:
-        //Foo::builder().build();
-
-        // This will not compile - because we set y twice:
-        //Foo::builder().x(1).y(2).y(3);
-    }
-}
-
-// #[cfg(test)]
-// mod tests_struct_default {
-
-//     #[derive(PartialEq, Debug, Clone, Default)]
-//     struct Foo {
-//         s: Option<String>,
-//         x: i32,
-//         y: Option<i32>,
-//         z: i32,
-//         w: Vec<u32>,
-//     }
-
-//     #[test]
-//     fn tests_struct_default() {
-//         assert_eq!(
-//             Foo{
-//                 x: 1,
-//                 y: 2,
-//                 z: 3,
-//                 w: vec![4, 5],
-//                 ..Default::default()
-//             }
-//             , Foo {s: None, x: 1, y: Some(2), z: 3, w: vec![4, 5] });
-
-//         // Change the order of construction:
-//         assert_eq!(
-//             Foo{
-//                 z: 1,
-//                 x: 2,
-//                 w: vec![4, 5],
-//                 y: 3,
-//                 ..Default::default()
-//             }
-//             , Foo {s: None, x: 2, y: Some(3), z: 1, w: vec![4, 5] });
-
-//         // Optional fields are optional:
-//         assert_eq!(
-//             Foo{
-//                 x: 1,
-//                 ..Default::default()
-//             }
-//             , Foo {s: None, x: 1, y: None, z: 0, w: vec![] });
-
-//         // Optional + into:
-//         assert_eq!(
-//             Foo{
-//                 s: "hello".to_owned(),
-//                 x: 1,
-//                 ..Default::default()
-//             }
-//             , Foo {s: Some("hello".into()), x: 1, y: None, z: 20, w: vec![30, 40] });
-
-//         // This will not compile - because we did not set x:
-//         //Foo::builder().build();
-
-//         // This will not compile - because we set y twice:
-//         //Foo::builder().x(1).y(2).y(3);
-//     }
-// }
