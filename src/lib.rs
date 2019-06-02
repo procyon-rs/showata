@@ -20,7 +20,7 @@ mod show_ndarray;
 #[cfg(feature = "show_vega")]
 mod show_vega;
 #[cfg(feature = "show_vega")]
-mod vegalite;
+pub mod vegalite3;
 
 #[cfg(feature = "show_image")]
 mod show_image;

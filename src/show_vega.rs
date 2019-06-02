@@ -10,10 +10,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //use vega_lite::Spec;
-use crate::vegalite::Vegalite;
-use serde::Serialize;
+use crate::vegalite3::Vegalite;
 use serde_json;
-use crate::vegalite;
 use crate::ContentInfo;
 use crate::Showable;
 use failure::Error;
@@ -25,7 +23,7 @@ impl Showable for Vegalite {
         let content = serde_json::to_string(self)?;
         Ok(ContentInfo{
             content,
-            mime_type: "application/vnd.vegalite.v2+json".into(),
+            mime_type: "application/vnd.vegalite.v3+json".into(),
         })
     }
 
@@ -63,141 +61,3 @@ const VEGA_EMBED_HTML_TEMPLATE: &str = r#"
 </body>
 </html>
 "#;
-
-pub fn iter_to_data<T>(v: impl Iterator<Item = T>) -> vegalite::Data
-where
-    T: Serialize,
-{
-    vegalite::Data {
-        format: None,
-        name: None,
-        url: None,
-        values: Some(iter_to_data_inline_dataset(v))
-    }
-}
-
-fn iter_to_data_inline_dataset<T>(v: impl Iterator<Item = T>) -> vegalite::DataInlineDataset
-where
-    T: Serialize,
-{
-    // let values = v.map(|it|{
-    //     match serde_json.to_json(it) {
-    //         v: bool => InlineDataset::Bool(v),
-    //         v: Double(f64),
-    // String(String),
-
-    //         v => AnythingMap(HashMap<String, Option<serde_json::Value>>),
-    //     }
-    // })
-    let values = v.map(|it|
-        serde_json::to_value(it)
-    ).collect::<Result<Vec<_>, _>>().expect("TODO manage error in iter_to_dataInlineDataSet");
-    vegalite::DataInlineDataset::UnionArray(values)
-}
-
-impl<T> From<&[T]> for vegalite::Data
-where
-    T: Serialize,
-{
-    fn from(v: &[T]) -> Self {
-        iter_to_data(v.iter())
-    }
-}
-
-impl<T> From<&Vec<T>> for vegalite::Data
-where
-    T: Serialize,
-{
-    fn from(v: &Vec<T>) -> Self {
-        iter_to_data(v.iter())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::vegalite::*;
-    use csv;
-    use std::path::Path;
-    use serde::{Serialize, Deserialize};
-
-// {
-//   "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
-//   "description": "Google's stock price over time.",
-//   "data": {"url": "data/stocks.csv"},
-//   "transform": [{"filter": "datum.symbol==='GOOG'"}],
-//   "mark": "line",
-//   "encoding": {
-//     "x": {"field": "date", "type": "temporal"},
-//     "y": {"field": "price", "type": "quantitative"}
-//   }
-// }
-
-    #[derive(Serialize, Deserialize)]
-    pub struct Item {
-        pub symbol: String,
-        pub date: String,
-        pub price: f64,
-    }
-
-    #[test]
-    fn test_save_as() {
-        let mut rdr = csv::Reader::from_path(Path::new("examples/res/data/stocks.csv")).unwrap();
-        let values = rdr.deserialize().into_iter().collect::<Result<Vec<Item>, csv::Error>>().unwrap();
-        let chart = VegaliteBuilder::default()
-            // .title(Some(crate::vegalite::Title::String("Hello".to_owned())))
-            // .width(400.0)
-            // .height(200.0)
-            // .padding(Some(Padding::Double(5.0)))
-            .description("Google's stock price over time.".to_owned())
-            .data(Some((&values).into()))
-            .transform(Some(vec![
-                TransformBuilder::default().filter(Some(
-                    PurpleLogicalOperandPredicate::String("datum.symbol==='GOOG'".to_owned())
-                )).build().unwrap()
-            ]))
-            .mark(Some(AnyMark::Enum(Mark::Line)))
-            .encoding(Some(EncodingBuilder::default()
-                .x(XClassBuilder::default().field(Some(Field::String("date".to_string()))).def_type(Some(Type::Temporal)).build().unwrap())
-                .y(XClassBuilder::default().field(Some(Field::String("price".to_string()))).def_type(Some(Type::Quantitative)).build().unwrap())
-                .build()
-                .unwrap()
-            ))
-            .build()
-            .unwrap();
-        chart.show().unwrap();
-    }
-
-    // impl From<String> for crate::vegalite::Title {
-    //     fn from(v: String) -> Self {
-    //         crate::vegalite::Title::String(v)
-    //     }
-    // }
-
-    impl<S> From<S> for crate::vegalite::Title
-    where
-        S: Into<String>,
-    {
-        fn from(v: S) -> Self {
-            crate::vegalite::Title::String(v.into())
-        }
-    }
-
-    // impl<S> From<S> for Option<crate::vegalite::Title> where S: Into<String> {
-    //     fn from(v: S) -> Self {
-    //         Some(crate::vegalite::Title::String(v.into()))
-    //     }
-    // }
-
-    // impl<'a> From<&'a str> for Option<crate::vegalite::Title> {
-    //     fn from(v: &'a str) -> Self {
-    //         Some(crate::vegalite::Title::String(v.into()))
-    //     }
-    // }
-
-    // impl<'a> From<&'a str> for crate::vegalite::Title {
-    //     fn from(v: &'a str) -> Self {
-    //         crate::vegalite::Title::String(v.into())
-    //     }
-    // }
-}
