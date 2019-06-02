@@ -10,11 +10,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 use crate::ContentInfo;
-use crate::Displayable;
+use crate::Showable;
 use failure::Error;
 use ndarray;
 
-impl<S, D> Displayable for ndarray::ArrayBase<S, D>
+impl<S, D> Showable for ndarray::ArrayBase<S, D>
 where
     D: ndarray::Dimension,
     S: ndarray::Data,
@@ -55,19 +55,19 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Displayable;
+    use crate::Showable;
 
     #[test]
     fn test_no_crash_on_3x4() {
         use ndarray::Array2;
         let m = Array2::<f64>::zeros((3, 4));
-        m.display().unwrap();
+        m.show().unwrap();
     }
 
     #[test]
     fn test_no_crash_on_3x1() {
         use ndarray::Array1;
         let m = Array1::<f64>::zeros(3);
-        m.display().unwrap();
+        m.show().unwrap();
     }
 }

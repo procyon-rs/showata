@@ -10,12 +10,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 use crate::ContentInfo;
-use crate::Displayable;
+use crate::Showable;
 use nalgebra as na;
 use num_traits;
 use failure::Error;
 
-impl<N, R, C, S> Displayable for na::Matrix<N, R, C, S> where
+impl<N, R, C, S> Showable for na::Matrix<N, R, C, S> where
     N: na::Scalar + PartialOrd + num_traits::sign::Signed,
     R: na::Dim,
     C: na::Dim,
@@ -53,12 +53,12 @@ impl<N, R, C, S> Displayable for na::Matrix<N, R, C, S> where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Displayable;
+    use crate::Showable;
 
     #[test]
     fn test_no_crash_on_3x4() {
         let m = na::Matrix3x4::new(11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34);
-        m.display().unwrap();
+        m.show().unwrap();
         m.evcxr_display();
     }
 }

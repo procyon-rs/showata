@@ -10,7 +10,7 @@ matrix:
   fast_finish: true
 script:
   - cargo build
-  - cargo build --features=display_nalgebra
+  - cargo build --features=show_nalgebra
   - cargo test --all-targets --all-features
   # run doc-tests, because --all-targets includes examples but not doc-tests
   - cargo test --doc --all-features

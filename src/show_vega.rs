@@ -15,10 +15,10 @@ use serde::Serialize;
 use serde_json;
 use crate::vegalite;
 use crate::ContentInfo;
-use crate::Displayable;
+use crate::Showable;
 use failure::Error;
 
-impl Displayable for Vegalite {
+impl Showable for Vegalite {
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         // vega3-extension: .vg, .vl, .vg.json, .vl.json, .vega, .vegalite
         // mime-types: 	application/vnd.vega.v3+json, application/vnd.vegalite.v2+json
@@ -165,7 +165,7 @@ mod tests {
             ))
             .build()
             .unwrap();
-        chart.display().unwrap();
+        chart.show().unwrap();
     }
 
     // impl From<String> for crate::vegalite::Title {

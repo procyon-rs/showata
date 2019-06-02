@@ -1,31 +1,23 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 use image;
 use std::ops::Deref;
 use base64;
 use failure::Error;
 use failure::format_err;
 use crate::ContentInfo;
-use crate::Displayable;
+use crate::Showable;
 
-// impl EvcxrResult for image::RgbImage {
-//     fn evcxr_display(&self) {
-//         let mut buffer = Vec::new();
-//         image::png::PNGEncoder::new(&mut buffer).encode(&**self, self.width(), self.height(),
-//             image::ColorType::RGB(8)).unwrap();
-//         let img = base64::encode(&buffer);
-//         println!("EVCXR_BEGIN_CONTENT image/png\n{}\nEVCXR_END_CONTENT", img);
-//     }
-// }
-// impl EvcxrResult for image::GrayImage {
-//     fn evcxr_display(&self) {
-//         let mut buffer = Vec::new();
-//         image::png::PNGEncoder::new(&mut buffer).encode(&**self, self.width(), self.height(),
-//             image::ColorType::Gray(8)).unwrap();
-//         let img = base64::encode(&buffer);
-//         println!("EVCXR_BEGIN_CONTENT image/png\n{}\nEVCXR_END_CONTENT", img);
-//     }
-// }
-
-impl Displayable for image::DynamicImage {
+impl Showable for image::DynamicImage {
     fn to_content_info<'a>(&'a self) -> Result<ContentInfo, Error> {
         self.as_rgba8().ok_or(format_err!("failed to view the image as rbga")).and_then(|i| i.to_content_info())
     }
@@ -38,7 +30,7 @@ impl Displayable for image::DynamicImage {
     }
 }
 
-impl<P, Container> Displayable for image::ImageBuffer<P, Container> where
+impl<P, Container> Showable for image::ImageBuffer<P, Container> where
     P: image::Pixel<Subpixel = u8> + 'static,
     Container: Deref<Target = [u8]>,
 {
@@ -78,16 +70,16 @@ const IMAGE_EMBED_HTML_TEMPLATE: &str = r#"
 mod tests {
     use super::*;
     use image;
-    use crate::Displayable;
+    use crate::Showable;
 
     #[test]
-    fn test_display_local_image() {
+    fn test_show_local_image() {
         let img = image::open("examples/res/rustacean-flat-happy.png").unwrap();
-        img.display().unwrap();
+        img.show().unwrap();
     }
 
     #[test]
-    fn test_display_gen_image() {
+    fn test_show_gen_image() {
         let img = image::ImageBuffer::from_fn(256, 256, |x, y| {
             if (x as i32 - y as i32).abs() < 3 {
                 image::Rgb([0, 0, 255])
@@ -95,6 +87,6 @@ mod tests {
                 image::Rgb([0, 0, 0])
             }
         });
-        img.display().unwrap();
+        img.show().unwrap();
     }
 }

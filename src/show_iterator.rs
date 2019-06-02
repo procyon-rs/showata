@@ -11,7 +11,7 @@
 // limitations under the License.
 use failure::Error;
 use crate::ContentInfo;
-use crate::Displayable;
+use crate::Showable;
 
 pub fn from_iter<T>(v: impl Iterator<Item = T>) -> ContentInfo
 where
@@ -34,9 +34,9 @@ where
     }
 }
 
-// until specialization, do not provide Displayable for IntoIterator
+// until specialization, do not provide Showable for IntoIterator
 // because it conflicts with nalgebra array, ndarray, DynamicImage
-// impl<T, C> Displayable for C where
+// impl<T, C> Showable for C where
 //     C: IntoIterator<Item=T>,
 //     T: std::fmt::Debug,{
 //     fn to_content_info(&self) -> Result<ContentInfo, Error> {
@@ -45,14 +45,14 @@ where
 // }
 
 
-impl<T> Displayable for Vec<T> where
+impl<T> Showable for Vec<T> where
     T: std::fmt::Debug,{
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         Ok(from_iter(self.iter()))
     }
 }
 
-impl<T> Displayable for &[T] where
+impl<T> Showable for &[T] where
     T: std::fmt::Debug,{
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         Ok(from_iter(self.iter()))
@@ -68,7 +68,7 @@ mod tests {
     fn test_vec() {
         let m = vec![1.0, 2.0, 3.0];
         //TODO test content of m
-        m.display().unwrap();
+        m.show().unwrap();
     }
 
     #[test]
@@ -76,6 +76,6 @@ mod tests {
         let m0 = vec![1.0, 2.0, 3.0];
         let m = m0.as_slice();
         //TODO test content of m
-        m.display().unwrap();
+        m.show().unwrap();
     }
 }
