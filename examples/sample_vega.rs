@@ -3,8 +3,6 @@ use showata::Showable;
 use csv;
 use std::path::Path;
 use serde::{Serialize, Deserialize};
-use failure::Error;
-
 
 #[derive(Serialize, Deserialize)]
 pub struct Item {
@@ -13,7 +11,13 @@ pub struct Item {
     pub price: f64,
 }
 
-fn main() -> Result<(), Error> {
+macro_rules! build{
+    ($s:expr ) => {
+        $s.build().map_err(|s| failure::format_err!("{}", s))?
+    };
+}
+
+fn main() -> Result<(), failure::Error> {
     // {
     //   "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
     //   "description": "Google's stock price over time.",
@@ -28,25 +32,24 @@ fn main() -> Result<(), Error> {
 
     let mut rdr = csv::Reader::from_path(Path::new("examples/res/data/stocks.csv"))?;
     let values = rdr.deserialize().into_iter().collect::<Result<Vec<Item>, csv::Error>>()?;
-    let chart = VegaliteBuilder::default()
-        // .title(Some(crate::vegalite::Title::String("Hello".to_owned())))
+    let chart = build!(VegaliteBuilder::default()
+        .title("Stock price")
         // .width(400.0)
         // .height(200.0)
         // .padding(Some(Padding::Double(5.0)))
         .description("Google's stock price over time.")
         .data(&values)
         .transform(vec![
-            TransformBuilder::default().filter(
+            build!(TransformBuilder::default().filter(
                 "datum.symbol==='GOOG'"
-            ).build().unwrap()
+            ))
         ])
         .mark(Mark::Line)
-        .encoding(EncodingBuilder::default()
-            .x(XClassBuilder::default().field("date").def_type(StandardType::Temporal).build().unwrap())
-            .y(YClassBuilder::default().field("price").def_type(StandardType::Quantitative).build().unwrap())
-            .build().unwrap()
-        )
-        .build().unwrap();
+        .encoding(build!(EncodingBuilder::default()
+            .x(build!(XClassBuilder::default().field("date").def_type(StandardType::Temporal)))
+            .y(build!(YClassBuilder::default().field("price").def_type(StandardType::Quantitative)))
+        ))
+    );
     chart.show()?;
     eprint!("shown");
     Ok(())
