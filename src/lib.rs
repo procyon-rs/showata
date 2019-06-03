@@ -66,26 +66,32 @@ pub trait Showable {
 
     fn show(&self) -> Result<(), Error> {
         match select_output() {
-            Medium::Noop => Ok(()),
             Medium::Browser => self.show_in_browser(),
             Medium::Jupyter => {
                 self.evcxr_display();
                 Ok(())
             }
+            _ => Ok(()),
         }
     }
 }
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Medium {
     Noop,
+    Auto,
     Jupyter,
     Browser,
 }
 
-pub static OUTPUT: Medium = Medium::Browser;
+pub static OUTPUT: Medium = Medium::Auto;
 
-fn select_output() -> &'static Medium {
-    &OUTPUT //Medium::Browser
+fn select_output() -> Medium {
+    use std::env;
+    match OUTPUT {
+        Medium::Auto if env::var("EVCXR_IS_RUNTIME").is_ok() => Medium::Jupyter,
+        Medium::Auto => Medium::Browser,
+        ref m => m.clone(),
+    }
 }
 
 const CONTENT_EMBED_HTML_TEMPLATE: &str = r#"
