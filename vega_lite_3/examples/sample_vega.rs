@@ -1,8 +1,9 @@
-use showata::vegalite3::*;
-use showata::Showable;
+use vega_lite_3::*;
+//use showata::Showable;
 use csv;
 use std::path::Path;
 use serde::{Serialize, Deserialize};
+use serde_json;
 
 #[derive(Serialize, Deserialize)]
 pub struct Item {
@@ -50,7 +51,8 @@ fn main() -> Result<(), failure::Error> {
             .y(build!(YClassBuilder::default().field("price").def_type(StandardType::Quantitative)))
         ))
     );
-    chart.show()?;
-    eprint!("shown");
+    //chart.show()?;
+    let content = serde_json::to_string(&chart)?;
+    eprint!("{}", content);
     Ok(())
 }

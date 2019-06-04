@@ -10,7 +10,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //use vega_lite::Spec;
-use crate::vegalite3::Vegalite;
+use vega_lite_3::Vegalite;
 use serde_json;
 use crate::ContentInfo;
 use crate::Showable;
