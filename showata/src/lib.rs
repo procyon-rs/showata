@@ -17,9 +17,6 @@ mod show_nalgebra;
 #[cfg(feature = "show_ndarray")]
 mod show_ndarray;
 
-#[cfg(feature = "show_vega")]
-mod show_vega;
-
 #[cfg(feature = "show_image")]
 mod show_image;
 

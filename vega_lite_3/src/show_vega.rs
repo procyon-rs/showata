@@ -10,10 +10,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //use vega_lite::Spec;
-use vega_lite_3::Vegalite;
+use crate::Vegalite;
 use serde_json;
-use crate::ContentInfo;
-use crate::Showable;
+use showata::ContentInfo;
+use showata::Showable;
 use failure::Error;
 
 impl Showable for Vegalite {
