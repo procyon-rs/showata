@@ -83,6 +83,11 @@ pub static OUTPUT: Medium = Medium::Auto;
 fn select_output() -> Medium {
     use std::env;
     match OUTPUT {
+        Medium::Auto if env::var("SHOWATA_MEDIUM").is_ok() => match env::var("SHOWATA_MEDIUM").unwrap().to_lowercase().as_ref() {
+            "jupyter" => Medium::Jupyter,
+            "browser" => Medium::Browser,
+            _ => Medium::Noop
+        }
         Medium::Auto if env::var("EVCXR_IS_RUNTIME").is_ok() => Medium::Jupyter,
         Medium::Auto => Medium::Browser,
         ref m => m.clone(),
