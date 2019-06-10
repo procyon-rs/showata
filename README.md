@@ -2,6 +2,13 @@
 
 A library of to show data (in browser, [evcxr_jupyter](https://crates.io/crates/evcxr_jupyter)) as table, chart....
 
+The crate provides display for:
+
+- image
+- vector and slice (as table)
+- ndarray's Array (as table)
+- nalgebra's matrix (as table)
+
 Feedbacks (comments, tickets, PR,...) are welcomes.
 
 ## Usages
@@ -11,46 +18,43 @@ Feedbacks (comments, tickets, PR,...) are welcomes.
 Inside your jupyter (rust) notebook:
 
 ```txt
-:dep showata = { version = "0.1.0" features=["show_nalgebra"]}
+:dep showata = { version = "0.1.0" features=["show_ndarray"]}
 
+extern crate ndarray;
 extern crate showata;
-use showata::Showable;
 
-let data:  = 
+use showata::Showable;
+use ndarray::Array2;
+
+let data = Array2::<f64>::zeros((3, 4));
+data.show()
 ```
 
 ![Sample Screenshot](https://i.imgur.com/HH3qUXh.png)
 
-### Show Chart
+### Inside Editor
 
-```rust
-        let mut rdr = csv::Reader::from_path(Path::new("examples/res/data/stocks.csv")).unwrap();
-        let values = rdr.deserialize().into_iter().collect::<Result<Vec<Item>, csv::Error>>().unwrap();
-        let chart = VegaliteBuilder::default()
-            // .title(Some(crate::vegalite::Title::String("Hello".to_owned())))
-            // .width(400.0)
-            // .height(200.0)
-            // .padding(Some(Padding::Double(5.0)))
-            .description("Google's stock price over time.".to_owned())
-            .data(Some((&values).into()))
-            .transform(Some(vec![
-                TransformBuilder::default().filter(Some(
-                    PurpleLogicalOperandPredicate::String("datum.symbol==='GOOG'".to_owned())
-                )).build().unwrap()
-            ]))
-            .mark(Some(AnyMark::Enum(Mark::Line)))
-            .encoding(Some(EncodingBuilder::default()
-                .x(XClassBuilder::default().field(Some(Field::String("date".to_string()))).def_type(Some(Type::Temporal)).build().unwrap())
-                .y(XClassBuilder::default().field(Some(Field::String("price".to_string()))).def_type(Some(Type::Quantitative)).build().unwrap())
-                .build()
-                .unwrap()
-            ))
-            .build()
-            .unwrap();
-        chart.show().unwrap();
+Inside your favorite editor/IDE:
+
+```txt
+use showata::Showable;
+use ndarray::Array2;
+
+let data = Array2::<f64>::zeros((3, 4));
+data.show().unwrap();
 ```
 
-Currently, [Vega-Lite v3](https://vega.github.io/vega-lite/) is the only way to show chart. The rust API to use `vega-lite` will be improve in the future (and maybe moved into it's own crate).
+```
+# By default the data will be shown inside your web browser.
+cargo run
+
+# Show nothing
+SHOWATA_MEDIUM=Noop cargo run
+```
+
+### Show Chart
+
+see [vega_lite_3](https://github.com/davidB/vega_lite_3.rs)
 
 ### Notes
 
@@ -59,7 +63,7 @@ Currently the project groups showers as `features` instead of packages. But it c
 Why features (vs packages):
 
 - less lines of code to insert into a notebook (but longer)
-- ability to share a `trait`and provide `impl` for external crates (else need to create one trait `<Package>Display` per package and to call `use <package>::<Package>Display` for each package in the notebook)
+- ability to share a `trait`and provide `impl` for external crates
 
 ## Links
 
