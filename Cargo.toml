@@ -1,5 +1,32 @@
-[workspace]
-members = [
-  "showata",
-  "vega_lite_3",
-]
+[package]
+name = "showata"
+version = "0.1.0-dev"
+authors = ["David Bernard <david.bernard.31@gmail.com>"]
+edition = "2018"
+license = "Apache-2.0"
+description = "A library of to show data (in browser, evcxr_jupyter) as table, chart..."
+repository = "https://github.com/davidB/showata"
+readme = "README.md"
+#category = ["visualization"]
+keywords = ["evcxr", "jupyter", "visualization", "plot", "vega"]
+
+[dependencies]
+base64 = "0.10.1"
+failure = "0.1.5"
+opener = "0.4.0"
+
+#arrow = {version = "0.13.0", optional = true} # nightly
+image = {version = "0.21.2", optional = true}
+nalgebra = {version = "0.16.13", optional = true}
+num-traits = {version = "0.2", optional = true}
+ndarray = {version = "0.12.1", optional = true}
+
+[dev-dependencies]
+mime = "0.3.13"
+
+[features]
+default = []
+all = ["show_nalgebra", "show_ndarray", "show_image"]
+show_nalgebra = ["nalgebra", "num-traits"]
+show_ndarray = ["ndarray"]
+show_image = ["image"]
