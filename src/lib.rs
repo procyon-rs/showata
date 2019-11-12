@@ -20,8 +20,8 @@ mod show_ndarray;
 #[cfg(feature = "show_image")]
 mod show_image;
 
+use anyhow::Error;
 use std::path::Path;
-use failure::Error;
 use std::time::SystemTime;
 
 pub struct ContentInfo {
@@ -34,7 +34,9 @@ pub trait Showable {
 
     // the name of this function is hardcoded by evcxr
     fn evcxr_display(&self) {
-        let ci = self.to_content_info().expect("to be convertible into ContentInfo");
+        let ci = self
+            .to_content_info()
+            .expect("to be convertible into ContentInfo");
         show_text_in_jupyter(ci.mime_type, ci.content);
     }
 
@@ -70,6 +72,7 @@ pub trait Showable {
         }
     }
 }
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Medium {
     Noop,
@@ -83,10 +86,12 @@ pub static OUTPUT: Medium = Medium::Auto;
 fn select_output() -> Medium {
     use std::env;
     match OUTPUT {
-        Medium::Auto if env::var("SHOWATA_MEDIUM").is_ok() => match env::var("SHOWATA_MEDIUM").unwrap().to_lowercase().as_ref() {
-            "jupyter" => Medium::Jupyter,
-            "browser" => Medium::Browser,
-            _ => Medium::Noop
+        Medium::Auto if env::var("SHOWATA_MEDIUM").is_ok() => {
+            match env::var("SHOWATA_MEDIUM").unwrap().to_lowercase().as_ref() {
+                "jupyter" => Medium::Jupyter,
+                "browser" => Medium::Browser,
+                _ => Medium::Noop,
+            }
         }
         Medium::Auto if env::var("EVCXR_IS_RUNTIME").is_ok() => Medium::Jupyter,
         Medium::Auto => Medium::Browser,

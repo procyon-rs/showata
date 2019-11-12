@@ -11,7 +11,7 @@
 // limitations under the License.
 use crate::ContentInfo;
 use crate::Showable;
-use failure::Error;
+use anyhow::Error;
 use ndarray;
 
 impl<S, D> Showable for ndarray::ArrayBase<S, D>

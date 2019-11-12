@@ -9,9 +9,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-use failure::Error;
 use crate::ContentInfo;
 use crate::Showable;
+use anyhow::Error;
 
 pub fn from_iter<T>(v: impl Iterator<Item = T>) -> ContentInfo
 where
@@ -44,21 +44,23 @@ where
 //     }
 // }
 
-
-impl<T> Showable for Vec<T> where
-    T: std::fmt::Debug,{
+impl<T> Showable for Vec<T>
+where
+    T: std::fmt::Debug,
+{
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         Ok(from_iter(self.iter()))
     }
 }
 
-impl<T> Showable for &[T] where
-    T: std::fmt::Debug,{
+impl<T> Showable for &[T]
+where
+    T: std::fmt::Debug,
+{
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         Ok(from_iter(self.iter()))
     }
 }
-
 
 #[cfg(test)]
 mod tests {

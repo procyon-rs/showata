@@ -11,11 +11,12 @@
 // limitations under the License.
 use crate::ContentInfo;
 use crate::Showable;
+use anyhow::Error;
 use nalgebra as na;
 use num_traits;
-use failure::Error;
 
-impl<N, R, C, S> Showable for na::Matrix<N, R, C, S> where
+impl<N, R, C, S> Showable for na::Matrix<N, R, C, S>
+where
     N: na::Scalar + PartialOrd + num_traits::sign::Signed,
     R: na::Dim,
     C: na::Dim,

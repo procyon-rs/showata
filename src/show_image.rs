@@ -9,35 +9,43 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-use image;
-use std::ops::Deref;
-use base64;
-use failure::Error;
-use failure::format_err;
 use crate::ContentInfo;
 use crate::Showable;
+use anyhow::Error;
+use base64;
+use image;
+use std::ops::Deref;
 
 impl Showable for image::DynamicImage {
     fn to_content_info<'a>(&'a self) -> Result<ContentInfo, Error> {
-        self.as_rgba8().ok_or(format_err!("failed to view the image as rbga")).and_then(|i| i.to_content_info())
+        self.as_rgba8()
+            .ok_or(format_err!("failed to view the image as rbga"))
+            .and_then(|i| i.to_content_info())
     }
 
     fn to_html_page(&self) -> Result<String, Error> {
         let dod = self.to_content_info()?;
-        let content = IMAGE_EMBED_HTML_TEMPLATE.replace("{{ content }}", &dod.content)
-        .replace("{{ mime_type }}", &dod.mime_type);
+        let content = IMAGE_EMBED_HTML_TEMPLATE
+            .replace("{{ content }}", &dod.content)
+            .replace("{{ mime_type }}", &dod.mime_type);
         Ok(content.into())
     }
 }
 
-impl<P, Container> Showable for image::ImageBuffer<P, Container> where
+impl<P, Container> Showable for image::ImageBuffer<P, Container>
+where
     P: image::Pixel<Subpixel = u8> + 'static,
     Container: Deref<Target = [u8]>,
 {
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         let mut buffer = Vec::new();
-        image::png::PNGEncoder::new(&mut buffer).encode(self, self.width(), self.height(), <P as image::Pixel>::color_type())?;
-        Ok(ContentInfo{
+        image::png::PNGEncoder::new(&mut buffer).encode(
+            self,
+            self.width(),
+            self.height(),
+            <P as image::Pixel>::color_type(),
+        )?;
+        Ok(ContentInfo {
             content: base64::encode(&buffer),
             mime_type: "image/png;base64".into(),
         })
@@ -45,8 +53,9 @@ impl<P, Container> Showable for image::ImageBuffer<P, Container> where
 
     fn to_html_page<'a>(&self) -> Result<String, Error> {
         let dod = self.to_content_info()?;
-        let content = IMAGE_EMBED_HTML_TEMPLATE.replace("{{ content }}", &dod.content)
-        .replace("{{ mime_type }}", &dod.mime_type);
+        let content = IMAGE_EMBED_HTML_TEMPLATE
+            .replace("{{ content }}", &dod.content)
+            .replace("{{ mime_type }}", &dod.mime_type);
         Ok(content.into())
     }
 }
@@ -69,8 +78,8 @@ const IMAGE_EMBED_HTML_TEMPLATE: &str = r#"
 #[cfg(test)]
 mod tests {
     use super::*;
-    use image;
     use crate::Showable;
+    use image;
 
     #[test]
     fn test_show_local_image() {
