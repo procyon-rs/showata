@@ -1,5 +1,12 @@
 # showata
 
+[![license](https://img.shields.io/crates/l/showata.svg)](https://spdx.org/licenses/Apache-2.0.html)
+[![version](https://img.shields.io/crates/v/showata.svg)](https://crates.io/crates/showata)
+[![Release Doc](https://docs.rs/showata/badge.svg)](https://docs.rs/showata)
+
+[![Actions Status](https://github.com/procyon-rs/showata/workflows/ci-flow/badge.svg)](https://github.com/procyon-rs/showata/actions)
+
+
 A library of to show data (in browser, [evcxr_jupyter](https://crates.io/crates/evcxr_jupyter)) as table, chart....
 
 The crate provides display for:
@@ -54,7 +61,7 @@ SHOWATA_MEDIUM=Noop cargo run
 
 ### Show Chart
 
-see [vega_lite_3](https://github.com/davidB/vega_lite_3.rs)
+see [vega_lite_3](https://github.com/procyon-rs/vega_lite_3.rs)
 
 ### Notes
 
