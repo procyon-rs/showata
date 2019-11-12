@@ -11,7 +11,7 @@
 // limitations under the License.
 use crate::ContentInfo;
 use crate::Showable;
-use anyhow::Error;
+use anyhow::{anyhow, Error};
 use base64;
 use image;
 use std::ops::Deref;
@@ -19,7 +19,7 @@ use std::ops::Deref;
 impl Showable for image::DynamicImage {
     fn to_content_info<'a>(&'a self) -> Result<ContentInfo, Error> {
         self.as_rgba8()
-            .ok_or(format_err!("failed to view the image as rbga"))
+            .ok_or(anyhow!("failed to view the image as rbga"))
             .and_then(|i| i.to_content_info())
     }
 
@@ -43,7 +43,7 @@ where
             self,
             self.width(),
             self.height(),
-            <P as image::Pixel>::color_type(),
+            <P as image::Pixel>::COLOR_TYPE,
         )?;
         Ok(ContentInfo {
             content: base64::encode(&buffer),
