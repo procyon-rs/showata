@@ -33,15 +33,13 @@ where
             html.push_str(&format!("<th>{:?}</th>", c));
         }
         html.push_str("</tr>");
-        unsafe {
-            for r in 0..row_size {
-                html.push_str("<tr>");
-                html.push_str(&format!("<th>{:?}</th>", r));
-                for c in 0..col_size {
-                    html.push_str(&format!("<td>{:?}</td>", v.get_unchecked(r, c)));
-                }
-                html.push_str("</tr>");
+        for r in 0..row_size {
+            html.push_str("<tr>");
+            html.push_str(&format!("<th>{:?}</th>", r));
+            for c in 0..col_size {
+                html.push_str(&format!("<td>{:?}</td>", v.index((r, c))));
             }
+            html.push_str("</tr>");
         }
         html.push_str("</table>");
         Ok(ContentInfo {
