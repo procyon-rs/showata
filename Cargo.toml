@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["evcxr", "jupyter", "visualization", "plot", "vega"]
 
 [dependencies]
-base64 = "0.11.0"
+base64 = "0.12.0"
 opener = "0.4.1"
 anyhow = "1.0.19"
 
