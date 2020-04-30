@@ -22,6 +22,7 @@ mod show_image;
 
 use anyhow::Error;
 use std::path::Path;
+use std::path::PathBuf;
 use std::time::SystemTime;
 
 pub struct ContentInfo {
@@ -46,7 +47,7 @@ pub trait Showable {
         Ok(content.into())
     }
 
-    fn show_in_browser(&self) -> Result<(), Error> {
+    fn to_html_file(&self) -> Result<PathBuf, Error> {
         let mut dir = std::env::temp_dir();
         dir.push(env!("CARGO_PKG_NAME"));
         //TODO security check that the user can read/write only his own files
@@ -57,6 +58,11 @@ pub trait Showable {
         let path = dir.join(format!("show-{}.html", epoch.as_nanos()));
         let html = self.to_html_page()?;
         std::fs::write(&path, html)?;
+        Ok(path)
+    }
+
+    fn show_in_browser(&self) -> Result<(), Error> {
+        let path = self.to_html_file()?;
         opener::open(path.as_os_str())?;
         Ok(())
     }
