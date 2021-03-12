@@ -39,7 +39,7 @@ where
 {
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         let mut buffer = Vec::new();
-        image::png::PNGEncoder::new(&mut buffer).encode(
+        image::png::PngEncoder::new(&mut buffer).encode(
             self,
             self.width(),
             self.height(),
