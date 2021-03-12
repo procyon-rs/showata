@@ -1,6 +1,6 @@
 [package]
 name = "showata"
-version = "0.3.2-dev"
+version = "0.3.2"
 authors = ["David Bernard <david.bernard.31@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
