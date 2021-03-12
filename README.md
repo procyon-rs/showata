@@ -25,7 +25,7 @@ Feedbacks (comments, tickets, PR,...) are welcomes.
 Inside your jupyter (rust) notebook:
 
 ```rust
-:dep showata = { version = "0.3.0" features=["show_ndarray"]}
+:dep showata = { version = "0.3", features=["show_ndarray"]}
 :dep ndarray = "0.14"
 
 use showata::Showable;
