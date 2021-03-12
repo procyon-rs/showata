@@ -24,26 +24,22 @@ Feedbacks (comments, tickets, PR,...) are welcomes.
 
 Inside your jupyter (rust) notebook:
 
-```txt
-:dep showata = { version = "0.1.0" features=["show_ndarray"]}
-
-extern crate ndarray;
-extern crate showata;
+```rust
+:dep showata = { version = "0.3.0" features=["show_ndarray"]}
+:dep ndarray = "0.14"
 
 use showata::Showable;
 use ndarray::Array2;
 
-let data = Array2::<f64>::zeros((3, 4));
+let data: Array2 = Array2::<f64>::zeros((3, 4));
 data.show()
 ```
-
-![Sample Screenshot](https://i.imgur.com/HH3qUXh.png)
 
 ### Inside Editor
 
 Inside your favorite editor/IDE:
 
-```txt
+```rust
 use showata::Showable;
 use ndarray::Array2;
 
@@ -51,7 +47,7 @@ let data = Array2::<f64>::zeros((3, 4));
 data.show().unwrap();
 ```
 
-```
+```sh
 # By default the data will be shown inside your web browser.
 cargo run
 
