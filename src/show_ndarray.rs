@@ -14,11 +14,10 @@ use crate::Showable;
 use anyhow::Error;
 use ndarray;
 
-impl<S, D> Showable for ndarray::ArrayBase<S, D>
+impl<A, D> Showable for ndarray::Array<A, D>
 where
     D: ndarray::Dimension,
-    S: ndarray::Data,
-    S::Elem: std::fmt::Debug,
+    A: std::fmt::Debug,
 {
     fn to_content_info(&self) -> Result<ContentInfo, Error> {
         let v = self;
@@ -53,7 +52,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::Showable;
 
     #[test]
