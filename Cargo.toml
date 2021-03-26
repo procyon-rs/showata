@@ -19,7 +19,7 @@ anyhow = "^1.0"
 image = {version = "^0.23", optional = true}
 nalgebra = {version = "^0.25", optional = true}
 num-traits = {version = "^0.2", optional = true}
-ndarray = {version = "^0.14", optional = true}
+ndarray = {version = "^0.15", optional = true}
 
 [dev-dependencies]
 mime = "0.3.14"
