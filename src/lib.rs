@@ -20,6 +20,9 @@ mod show_ndarray;
 #[cfg(feature = "show_image")]
 mod show_image;
 
+#[cfg(feature = "show_burn")]
+mod show_burn;
+
 use anyhow::Error;
 use std::path::Path;
 use std::path::PathBuf;
