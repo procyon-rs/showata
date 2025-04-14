@@ -2,7 +2,7 @@
 name = "showata"
 version = "0.3.3"
 authors = ["David Bernard <david.bernard.31@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "Apache-2.0"
 description = "A library of to show data (in browser, evcxr_jupyter) as table, chart..."
 repository = "https://github.com/procyon-rs/showata"

@@ -13,7 +13,6 @@ use crate::ContentInfo;
 use crate::Showable;
 use anyhow::Error;
 use nalgebra as na;
-use num_traits;
 
 impl<N, R, C, S> Showable for na::Matrix<N, R, C, S>
 where

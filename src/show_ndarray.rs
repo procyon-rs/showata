@@ -12,7 +12,6 @@
 use crate::ContentInfo;
 use crate::Showable;
 use anyhow::Error;
-use ndarray;
 
 impl<A, D> Showable for ndarray::Array<A, D>
 where

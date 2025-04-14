@@ -45,7 +45,7 @@ pub trait Showable {
     fn to_html_page(&self) -> Result<String, Error> {
         let dod = self.to_content_info()?;
         let content = CONTENT_EMBED_HTML_TEMPLATE.replace("{{ content }}", &dod.content);
-        Ok(content.into())
+        Ok(content)
     }
 
     fn to_html_file(&self) -> Result<PathBuf, Error> {
@@ -102,7 +102,7 @@ fn select_output() -> Medium {
         }
         Medium::Auto if env::var("EVCXR_IS_RUNTIME").is_ok() => Medium::Jupyter,
         Medium::Auto => Medium::Browser,
-        ref m => m.clone(),
+        ref m => *m,
     }
 }
 

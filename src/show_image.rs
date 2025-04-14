@@ -13,14 +13,13 @@ use crate::ContentInfo;
 use crate::Showable;
 use anyhow::{anyhow, Error};
 use base64::prelude::*;
-use image;
 use image::EncodableLayout;
 use image::PixelWithColorType;
 use std::io::Cursor;
 use std::ops::Deref;
 
 impl Showable for image::DynamicImage {
-    fn to_content_info<'a>(&'a self) -> Result<ContentInfo, Error> {
+    fn to_content_info(&self) -> Result<ContentInfo, Error> {
         self.as_rgba8()
             .ok_or(anyhow!("failed to view the image as rbga"))
             .and_then(|i| i.to_content_info())
@@ -31,7 +30,7 @@ impl Showable for image::DynamicImage {
         let content = IMAGE_EMBED_HTML_TEMPLATE
             .replace("{{ content }}", &dod.content)
             .replace("{{ mime_type }}", &dod.mime_type);
-        Ok(content.into())
+        Ok(content)
     }
 }
 
@@ -56,7 +55,7 @@ where
         let content = IMAGE_EMBED_HTML_TEMPLATE
             .replace("{{ content }}", &dod.content)
             .replace("{{ mime_type }}", &dod.mime_type);
-        Ok(content.into())
+        Ok(content)
     }
 }
 
@@ -77,9 +76,7 @@ const IMAGE_EMBED_HTML_TEMPLATE: &str = r#"
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::Showable;
-    use image;
 
     #[test]
     fn test_show_local_image() {
